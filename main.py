@@ -24,13 +24,18 @@ def unroll(args, func, method, results):
         for i in range(len(args)):
             os.wait()
     elif method == 'thre':
+        threads = []
         for i in args:
             x = threading.Thread(target=thread_func, args=(i,))
+            threads += [x]
             x.start()
             results.append(func(i))
+        for t in threads:
+            t.join()
+            
 
 
-unroll([[1,2],[3,4],[5,6]], func, 'thre', results)
+unroll([[1,2],[3,4],[5,6]], func, 'proc', results)
 print(results)
 
 #Para testar quantidade de threads ativas.
