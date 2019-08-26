@@ -14,6 +14,10 @@ def thread_func(args):
 #Lista que armazena os resultados retornados da funcao func.
 results = []
 
+''' todo:
+    * Usar mémoria compartinhada para armazenar os resultados e a quantidade de processos restantes.
+    * usar semaforos para proteger a memoria compartilhada
+''' 
 
 def unroll(args, func, method, results):
     if method == 'proc':
