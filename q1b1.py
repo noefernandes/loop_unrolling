@@ -25,51 +25,72 @@ width_b = 0
 
 #Funcao que efetua a operacao em cada elemento da matriz em uma thread.
 def proc_func(args, pos):
-    result = sum(args)
-    print(result)
-    # inicio da área protegida
-    sem.acquire()
-    mm_results[pos:pos+4] = result.to_bytes(4,byteorder='big')
-    sem.release()
-    # fim da área protegida
+	result = sum(args)
+	print(result)
+	# inicio da área protegida
+	sem.acquire()
+	mm_results[pos:pos+4] = result.to_bytes(4,byteorder='big')
+	sem.release()
+	# fim da área protegida
 
 #Funcao que efetua a operacao em cada elemento da matriz em um processo
-def thread_func(args, pos):
-    print(pos)
-    results[pos] = sum(args)
+
+def thread_aux(results, k, i, j):
+	results[k] = matriz_a[i][k]*matriz_b[k][j]
+
+def thread_func(results, i, j):
+	results_partial = [None] * width_a
+	threads = []
+	for k in range(width_a):
+		x = threading.Thread(target=thread_aux, args=(results_partial, k, i, j))
+		threads.append(x)
+		x.start()
+	for t in threads:
+		t.join()
+	results[i][j] = sum(results_partial)
 
 def unroll(args, func, method, results):
-    len_args = len(args)
-    if method == 'proc':
-        mm_results.seek(0)
-        for i in range(len_args):
-            if os.fork() == 0:
-                func(args[i], i*4)
-                os._exit(0)
-        # Espera todos os processos filho terminarem
-        for _ in range(len_args):
-            os.waitpid(0, 0)
-        # Imprimi o resultado
-        print([int.from_bytes(mm_results.read(4), byteorder='big') for _ in range(len_args)])
-    elif method == 'thre':
-        threads = []
-        for i in range(len_args):
-            results = [None] * len_args
-            x = threading.Thread(target=func, args=(args[i],i))
-            threads.append(x)
-            x.start()
-        for t in threads:
-            t.join()
-        print(results)
+	len_args = len(args)
+	if method == 'proc':
+		mm_results.seek(0)
+		for i in range(len_args):
+			if os.fork() == 0:
+				func(args[i], i*4)
+				os._exit(0)
+		# Espera todos os processos filho terminarem
+		for _ in range(len_args):
+			os.waitpid(0, 0)
+		# Imprimi o resultado
+		print([int.from_bytes(mm_results.read(4), byteorder='big') for _ in range(len_args)])
+	elif method == 'thre':
+		threads = []
+		matriz_a = args[0]
+		matriz_b = args[1]
+		results = [None] * height_a
+		for i in range(height_a):
+			results[i] = [None] * width_b
+			for j in range(width_b):
+				x = threading.Thread(target=func, args=(results,i,j))
+				threads.append(x)
+				x.start()
+		for t in threads:
+			t.join()	
+		print(results)
 
 if (__name__ == "__main__"):
-    matriz_a = [[1,2],[3,4]]
-    matriz_b = [[5,6],[7,8]]
-    unroll([matriz_a, matriz_b], thread_func, 'thre', results)
-    sem.close()
-    mm_results.close()
-    posix_ipc.unlink_shared_memory(SMEM_NAME)
-
+	matriz_a = [[3,2],[3,3], [1,2]]
+	matriz_b = [[3,2,6],[1,2,5]]
+	height_a = len(matriz_a)
+	height_b = len(matriz_b)
+	width_a = len(matriz_a[0])
+	width_b = len(matriz_b[0])
+	if(width_a != height_b):
+		print('A matriz não pode ser multiplicada, pois a largura de a:{} != altura de b:{}.'.format(width_a,height_b))
+		exit(1)
+	unroll([matriz_a, matriz_b], thread_func, 'thre', results)
+	sem.close()
+	mm_results.close()
+	posix_ipc.unlink_shared_memory(SMEM_NAME)
 
 #Para testar quantidade de threads ativas.
 #print(threading.activeCount())
