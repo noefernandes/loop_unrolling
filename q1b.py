@@ -25,17 +25,10 @@ width = 0
 #Funcao que efetua a operacao em cada elemento da matriz em uma thread.
 def proc_func(ele_a, ele_b, i, j):
 	result = ele_a + ele_b
-	#print(result)
-
-	# print(result)
-
-	pos = i*width + j
+	pos = (i*width + j)*4
 	# inicio da área protegida
 	sem.acquire()
 	mm_results[pos:pos+4] = result.to_bytes(4,byteorder='big')
-	mm_results.seek(pos)
-	# print(int.from_bytes(mm_results.read(4), byteorder='big'))
-	print("pos: " + str(pos))
 	sem.release()
 	# fim da área protegida
 
@@ -47,14 +40,11 @@ def thread_func(ele_a, ele_b, results, i, j):
 def unroll(args, func, method, results):
 	len_args = len(args)
 	if method == 'proc':
-		mm_results.seek(0)
-
 		for i in range(height):
 			for j in range(width):
 				if os.fork() == 0:
 					func(args[0][i][j], args[1][i][j], i, j)
 					os._exit(0)						
-
 		# Espera todos os processos filho terminarem
 		for _ in range(width*height):
 			os.waitpid(0, 0)
