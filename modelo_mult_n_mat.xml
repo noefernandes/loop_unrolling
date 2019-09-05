@@ -240,7 +240,7 @@
         <arc id="Multiplicar 5 matrizes to Fila de matrizes" source="Multiplicar 5 matrizes" target="Fila de matrizes">
             <graphics/>
             <inscription>
-                <value>Default,6</value>
+                <value>Default,5</value>
                 <graphics/>
             </inscription>
             <tagged>
