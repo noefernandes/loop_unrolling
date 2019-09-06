@@ -58,6 +58,8 @@ def unroll(args, func, method, results):
 			results[i] = [None] * width
 			for j in range(width):
 				results[i][j] = int.from_bytes(mm_results.read(4), byteorder='big')
+		t_end = time.process_time()
+		print(t_end - t_start)
 		print(results)
 	elif method == 'thre':
 		t_start = time.process_time()
@@ -75,6 +77,8 @@ def unroll(args, func, method, results):
 
 		for t in threads:
 			t.join()
+		t_end = time.process_time()
+		print(t_end - t_start)
 		print(results)
 
 if (__name__ == "__main__"):
@@ -85,8 +89,6 @@ if (__name__ == "__main__"):
 	width = len(matrizA[0])
 
 	unroll([matrizA, matrizB], proc_func, 'proc', results)
-	t_end = time.process_time()
-	print(t_end - t_start)
 	#unroll([matrizA, matrizB], thread_func, 'thre', results)
 	sem.close()
 	mm_results.close()

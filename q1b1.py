@@ -64,7 +64,9 @@ def unroll(args, func, method, results):
 		# Espera todos os processos filho terminarem
 		for _ in range(len_args):
 			os.waitpid(0, 0)
+		t_end = time.process_time()
 		# Imprimi o resultado
+		print(t_end - t_start)
 		print([int.from_bytes(mm_results.read(4), byteorder='big') for _ in range(len_args)])
 	elif method == 'thre':
 		t_start = time.process_time()
@@ -80,6 +82,8 @@ def unroll(args, func, method, results):
 				x.start()
 		for t in threads:
 			t.join()
+		t_end = time.process_time()
+		print(t_end - t_start)
 		print(results)
 
 if (__name__ == "__main__"):
@@ -93,7 +97,6 @@ if (__name__ == "__main__"):
 		print('A matriz não pode ser multiplicada, pois a largura de a:{} != altura de b:{}.'.format(width_a,height_b))
 		exit(1)
 	unroll([matriz_a, matriz_b], thread_func, 'thre', results)
-	t_end = time.process_time()
 	print(t_end - t_start)
 	sem.close()
 	mm_results.close()
