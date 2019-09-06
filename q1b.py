@@ -9,9 +9,6 @@ import numpy as np
 
 SMEM_NAME = "smlu"
 
-t_start = 0
-t_end = 0
-
 # Cria a mémoria compartilhada
 memory = posix_ipc.SharedMemory(SMEM_NAME, flags = posix_ipc.O_CREAT, mode = 0o777, size = 50)
 mm_results = mmap.mmap(memory.fd, memory.size)
@@ -24,6 +21,8 @@ sem = posix_ipc.Semaphore("test_sem", flags = posix_ipc.O_CREAT, mode = 0o777,  
 results = []
 height = 0
 width = 0
+t_start = 0
+t_end = 0
 
 
 #Funcao que efetua a operacao em cada elemento da matriz em uma thread.
@@ -79,17 +78,26 @@ def unroll(args, func, method, results):
 		for t in threads:
 			t.join()
 		t_end = time.process_time()
-		print(t_end - t_start)
-		print(results)
+		#print(results)
+
+		print("Ordem da matriz: " + str(height) + " tempo: " + str(t_end - t_start))
 
 if (__name__ == "__main__"):
-	matrizA = [[1,2,3],[4,5,6]]
-	matrizB = [[7,8,9],[10,11,12]]
-	height = len(matrizA)
-	width = len(matrizA[0])
+	#matrizA = [[1,2,3],[4,5,6]]
+	#matrizB = [[7,8,9],[10,11,12]]
+	#print(matrizA)
+	#height = len(matrizA)
+	#width = len(matrizA[0])
 
-	unroll([matrizA, matrizB], proc_func, 'proc', results)
-	#unroll([matrizA, matrizB], thread_func, 'thre', results)
+	#unroll([matrizA, matrizB], proc_func, 'proc', results)
+
+	for i in range(101):
+		if(i in [1, 2, 3, 4, 5, 6, 8, 10, 20, 30, 40, 50, 75, 100]):
+			matrizA = np.random.rand(i,i).tolist()
+			matrizB = np.random.rand(i,i).tolist()
+			height = len(matrizA)
+			width = len(matrizA[0])
+			unroll([matrizA, matrizB], thread_func, 'thre', results)
 	sem.close()
 	mm_results.close()
 	posix_ipc.unlink_shared_memory(SMEM_NAME)
