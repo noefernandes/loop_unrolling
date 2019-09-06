@@ -5,6 +5,7 @@ import posix_ipc
 import sys
 import threading
 import time
+import numpy as np
 
 SMEM_NAME = "smlu"
 
@@ -84,7 +85,6 @@ def unroll(args, func, method, results):
 if (__name__ == "__main__"):
 	matrizA = [[1,2,3],[4,5,6]]
 	matrizB = [[7,8,9],[10,11,12]]
-
 	height = len(matrizA)
 	width = len(matrizA[0])
 

@@ -5,6 +5,7 @@ import posix_ipc
 import sys
 import threading
 import time
+import numpy as np
 
 SMEM_NAME = "smlu"
 
@@ -96,8 +97,8 @@ if (__name__ == "__main__"):
 	if(width_a != height_b):
 		print('A matriz não pode ser multiplicada, pois a largura de a:{} != altura de b:{}.'.format(width_a,height_b))
 		exit(1)
+
 	unroll([matriz_a, matriz_b], thread_func, 'thre', results)
-	print(t_end - t_start)
 	sem.close()
 	mm_results.close()
 	posix_ipc.unlink_shared_memory(SMEM_NAME)
