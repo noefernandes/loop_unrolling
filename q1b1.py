@@ -4,9 +4,12 @@ import mmap
 import posix_ipc
 import sys
 import threading
+import time
 
 SMEM_NAME = "smlu"
 
+t_start = 0
+t_end = 0
 
 # Cria a mémoria compartilhada
 memory = posix_ipc.SharedMemory(SMEM_NAME, flags = posix_ipc.O_CREAT, mode = 0o777, size = 50)
@@ -52,6 +55,7 @@ def thread_func(results, i, j):
 def unroll(args, func, method, results):
 	len_args = len(args)
 	if method == 'proc':
+		t_start = time.process_time()
 		mm_results.seek(0)
 		for i in range(len_args):
 			if os.fork() == 0:
@@ -63,6 +67,7 @@ def unroll(args, func, method, results):
 		# Imprimi o resultado
 		print([int.from_bytes(mm_results.read(4), byteorder='big') for _ in range(len_args)])
 	elif method == 'thre':
+		t_start = time.process_time()
 		threads = []
 		matriz_a = args[0]
 		matriz_b = args[1]
@@ -74,7 +79,7 @@ def unroll(args, func, method, results):
 				threads.append(x)
 				x.start()
 		for t in threads:
-			t.join()	
+			t.join()
 		print(results)
 
 if (__name__ == "__main__"):
@@ -88,6 +93,8 @@ if (__name__ == "__main__"):
 		print('A matriz não pode ser multiplicada, pois a largura de a:{} != altura de b:{}.'.format(width_a,height_b))
 		exit(1)
 	unroll([matriz_a, matriz_b], thread_func, 'thre', results)
+	t_end = time.process_time()
+	print(t_end - t_start)
 	sem.close()
 	mm_results.close()
 	posix_ipc.unlink_shared_memory(SMEM_NAME)

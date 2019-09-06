@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import time
+
+t_start = time.process_time()
 
 height_a = 0
 width_a = 0
@@ -31,6 +34,8 @@ if (__name__ == "__main__"):
 		print('A matriz não pode ser multiplicada, pois a largura de a:{} != altura de b:{}.'.format(width_a,height_b))
 		exit(1)
 	mat_product([matriz_a, matriz_b],results)
+	t_end = time.process_time()
+	print(t_end - t_start)
 
 #Para testar quantidade de threads ativas.
 #print(threading.activeCount())
