@@ -80,7 +80,7 @@ def unroll(args, func, method, results):
 		t_end = time.process_time()
 		#print(results)
 
-		print("Ordem da matriz: " + str(height) + " tempo: " + str(t_end - t_start))
+		print(t_end - t_start)
 
 if (__name__ == "__main__"):
 	#matrizA = [[1,2,3],[4,5,6]]

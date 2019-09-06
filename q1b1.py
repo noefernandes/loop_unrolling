@@ -66,8 +66,8 @@ def unroll(args, func, method, results):
 		for _ in range(len_args):
 			os.waitpid(0, 0)
 		t_end = time.process_time()
-		# Imprimi o resultado
-		print(t_end - t_start)
+		# Imprime o resultado
+		print('%f' % (t_end - t_start))
 		print([int.from_bytes(mm_results.read(4), byteorder='big') for _ in range(len_args)])
 	elif method == 'thre':
 		t_start = time.process_time()
@@ -85,20 +85,28 @@ def unroll(args, func, method, results):
 			t.join()
 		t_end = time.process_time()
 		print(t_end - t_start)
-		print(results)
+		#print('%f' % (t_end - t_start))
 
 if (__name__ == "__main__"):
-	matriz_a = [[3,2],[3,3], [1,2]]
-	matriz_b = [[3,2,6],[1,2,5]]
-	height_a = len(matriz_a)
-	height_b = len(matriz_b)
-	width_a = len(matriz_a[0])
-	width_b = len(matriz_b[0])
+	#matriz_a = [[3,2],[3,3], [1,2]]
+	#matriz_b = [[3,2,6],[1,2,5]]
+	#height_a = len(matriz_a)
+	#height_b = len(matriz_b)
+	#width_a = len(matriz_a[0])
+	#width_b = len(matriz_b[0])
 	if(width_a != height_b):
 		print('A matriz não pode ser multiplicada, pois a largura de a:{} != altura de b:{}.'.format(width_a,height_b))
 		exit(1)
 
-	unroll([matriz_a, matriz_b], thread_func, 'thre', results)
+	#unroll([matriz_a, matriz_b], thread_func, 'thre', results)
+
+	for i in range(101):
+		if(i in [1, 2, 3, 4, 5, 6, 8, 10, 20, 30, 40, 50, 75, 100]):
+			matrizA = np.random.rand(i,i).tolist()
+			matrizB = np.random.rand(i,i).tolist()
+			height = len(matrizA)
+			width = len(matrizA[0])
+			unroll([matrizA, matrizB], thread_func, 'thre', results)
 	sem.close()
 	mm_results.close()
 	posix_ipc.unlink_shared_memory(SMEM_NAME)
