@@ -22,7 +22,7 @@ def mat_product(args, results):
 			results[i][j] = soma
 	t_end = time.process_time()
 	print("tempo: " + str(t_end - t_start))
-	print("tamanho da matriz: " + str(height_a) + "\n")
+	#print("tamanho da matriz: " + str(height_a) + "\n")
 
 if (__name__ == "__main__"):
 	results = []
