@@ -3,12 +3,12 @@
         <token id="Default" enabled="true" red="0" green="0" blue="0"/>
         <place id="A*B">
             <graphics>
-                <position x="244.09090909090907" y="113.63636363636363"/>
+                <position x="240.0" y="225.0"/>
             </graphics>
             <name>
                 <value>A*B</value>
                 <graphics>
-                    <offset x="10.909090909090908" y="-3.6363636363636367"/>
+                    <offset x="19.727272727272727" y="-5.818181818181818"/>
                 </graphics>
             </name>
             <initialMarking>
@@ -23,7 +23,7 @@
         </place>
         <place id="A*B*C*D*E">
             <graphics>
-                <position x="69.54545454545456" y="168.18181818181816"/>
+                <position x="75.0" y="165.0"/>
             </graphics>
             <name>
                 <value>A*B*C*D*E</value>
@@ -41,14 +41,14 @@
                 <value>0</value>
             </capacity>
         </place>
-        <place id="AB*E">
+        <place id="AB*CDE">
             <graphics>
-                <position x="455.284090909091" y="113.63636363636363"/>
+                <position x="540.0" y="225.0"/>
             </graphics>
             <name>
-                <value>AB*E</value>
+                <value>AB*CDE</value>
                 <graphics>
-                    <offset x="26.363636363636363" y="-9.09090909090909"/>
+                    <offset x="33.63636363636363" y="-8.181818181818182"/>
                 </graphics>
             </name>
             <initialMarking>
@@ -63,7 +63,7 @@
         </place>
         <place id="ABCDE">
             <graphics>
-                <position x="714.090909090909" y="222.72727272727272"/>
+                <position x="720.0" y="225.0"/>
             </graphics>
             <name>
                 <value>ABCDE</value>
@@ -83,12 +83,12 @@
         </place>
         <place id="C*D">
             <graphics>
-                <position x="242.72727272727272" y="223.1818181818182"/>
+                <position x="240.0" y="120.0"/>
             </graphics>
             <name>
                 <value>C*D</value>
                 <graphics>
-                    <offset x="22.727272727272727" y="-1.8181818181818181"/>
+                    <offset x="10.909090909090908" y="-3.6363636363636367"/>
                 </graphics>
             </name>
             <initialMarking>
@@ -101,14 +101,14 @@
                 <value>0</value>
             </capacity>
         </place>
-        <place id="CD*ABE">
+        <place id="CD*E">
             <graphics>
-                <position x="536.3636363636366" y="223.18181818181816"/>
+                <position x="450.0" y="120.0"/>
             </graphics>
             <name>
-                <value>CD*ABE</value>
+                <value>CD*E</value>
                 <graphics>
-                    <offset x="33.63636363636363" y="-8.181818181818182"/>
+                    <offset x="26.363636363636363" y="-9.09090909090909"/>
                 </graphics>
             </name>
             <initialMarking>
@@ -123,7 +123,7 @@
         </place>
         <transition id="T0">
             <graphics>
-                <position x="347.7272727272728" y="113.63636363636363"/>
+                <position x="345.0" y="120.0"/>
             </graphics>
             <name>
                 <value>T0</value>
@@ -149,7 +149,7 @@
         </transition>
         <transition id="T2">
             <graphics>
-                <position x="455.0000000000001" y="222.72727272727272"/>
+                <position x="450.0" y="225.0"/>
             </graphics>
             <name>
                 <value>T2</value>
@@ -175,7 +175,7 @@
         </transition>
         <transition id="T3">
             <graphics>
-                <position x="152.72727272727275" y="168.63636363636363"/>
+                <position x="150.0" y="165.0"/>
             </graphics>
             <name>
                 <value>T3</value>
@@ -201,7 +201,7 @@
         </transition>
         <transition id="T4">
             <graphics>
-                <position x="608.1818181818181" y="223.18181818181816"/>
+                <position x="615.0" y="225.0"/>
             </graphics>
             <name>
                 <value>T4</value>
@@ -234,11 +234,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="95" y="179" curvePoint="false"/>
-            <arcpath id="001" x="159" y="180" curvePoint="false"/>
+            <arcpath id="000" x="101" y="177" curvePoint="false"/>
+            <arcpath id="001" x="156" y="177" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="A*B to T0" source="A*B" target="T0">
+        <arc id="A*B to T0" source="C*D" target="T0">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -247,11 +247,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="270" y="125" curvePoint="false"/>
-            <arcpath id="001" x="353" y="125" curvePoint="false"/>
+            <arcpath id="000" x="266" y="132" curvePoint="false"/>
+            <arcpath id="001" x="351" y="132" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="AB*E to T2" source="AB*E" target="T2">
+        <arc id="AB*E to T2" source="CD*E" target="T2">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -260,11 +260,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="466" y="140" curvePoint="false"/>
-            <arcpath id="001" x="467" y="219" curvePoint="false"/>
+            <arcpath id="000" x="462" y="146" curvePoint="false"/>
+            <arcpath id="001" x="462" y="222" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="C*D to T2" source="C*D" target="T2">
+        <arc id="C*D to T2" source="A*B" target="T2">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -273,11 +273,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="269" y="234" curvePoint="false"/>
-            <arcpath id="001" x="460" y="234" curvePoint="false"/>
+            <arcpath id="000" x="266" y="237" curvePoint="false"/>
+            <arcpath id="001" x="456" y="237" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="CD*ABE to T4" source="CD*ABE" target="T4">
+        <arc id="CD*ABE to T4" source="AB*CDE" target="T4">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -286,11 +286,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="562" y="234" curvePoint="false"/>
-            <arcpath id="001" x="614" y="235" curvePoint="false"/>
+            <arcpath id="000" x="566" y="237" curvePoint="false"/>
+            <arcpath id="001" x="621" y="237" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T0 to AB*E" source="T0" target="AB*E">
+        <arc id="T0 to AB*E" source="T0" target="CD*E">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -299,11 +299,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="363" y="125" curvePoint="false"/>
-            <arcpath id="001" x="451" y="124" curvePoint="false"/>
+            <arcpath id="000" x="361" y="132" curvePoint="false"/>
+            <arcpath id="001" x="447" y="132" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T2 to CD*ABE" source="T2" target="CD*ABE">
+        <arc id="T2 to CD*ABE" source="T2" target="AB*CDE">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -312,11 +312,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="470" y="234" curvePoint="false"/>
-            <arcpath id="001" x="532" y="234" curvePoint="false"/>
+            <arcpath id="000" x="466" y="237" curvePoint="false"/>
+            <arcpath id="001" x="537" y="237" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T3 to A*B" source="T3" target="A*B">
+        <arc id="T3 to A*B" source="T3" target="C*D">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -325,11 +325,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="169" y="175" curvePoint="false"/>
-            <arcpath id="001" x="242" y="132" curvePoint="false"/>
+            <arcpath id="000" x="167" y="172" curvePoint="false"/>
+            <arcpath id="001" x="238" y="138" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T3 to C*D" source="T3" target="C*D">
+        <arc id="T3 to C*D" source="T3" target="A*B">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -338,8 +338,8 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="169" y="185" curvePoint="false"/>
-            <arcpath id="001" x="240" y="227" curvePoint="false"/>
+            <arcpath id="000" x="166" y="182" curvePoint="false"/>
+            <arcpath id="001" x="239" y="228" curvePoint="false"/>
             <type value="normal"/>
         </arc>
         <arc id="T4 to ABCDE" source="T4" target="ABCDE">
@@ -351,8 +351,8 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="624" y="234" curvePoint="false"/>
-            <arcpath id="001" x="710" y="234" curvePoint="false"/>
+            <arcpath id="000" x="631" y="237" curvePoint="false"/>
+            <arcpath id="001" x="717" y="237" curvePoint="false"/>
             <type value="normal"/>
         </arc>
     </net>
