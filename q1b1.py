@@ -8,13 +8,7 @@ import time
 import numpy as np
 
 SMEM_NAME = "smlu"
-
-# Cria a mémoria compartilhada
-memory = posix_ipc.SharedMemory(SMEM_NAME, flags = posix_ipc.O_CREAT, mode = 0o777, size = 50)
-mm_results = mmap.mmap(memory.fd, memory.size)
-memory.close_fd()
-#Cria o semáforo
-sem = posix_ipc.Semaphore("test_sem", flags = posix_ipc.O_CREAT, mode = 0o777,  initial_value=1)
+SEM_NAME = "semlu"
 
 
 #Lista que armazena os resultados retornados da funcao func.
@@ -24,87 +18,82 @@ width = 0
 t_start = 0
 t_end = 0
 
-
 #Funcao que efetua a operacao em cada elemento da matriz em uma thread.
-def proc_func(ele_a, ele_b, i, j):
-	result = ele_a + ele_b
-	pos = (i*width + j)*4
+def proc_func(row_a, row_b, i):
+	result = row_a + row_b
+	pos = i*width*4
 	# inicio da área protegida
+	mm_results.seek(pos)
 	sem.acquire()
-	mm_results[pos:pos+4] = result.to_bytes(4,byteorder='big')
+	mm_results.write(result.tobytes())
 	sem.release()
+	sem.close()
 	# fim da área protegida
 
 #Funcao que efetua a operacao em cada elemento da matriz em um processo
 def thread_func(ele_a, ele_b, results, i, j):
 	results[i][j] = ele_a + ele_b
 
-
 def unroll(args, func, method, results):
-	len_args = len(args)
 	if method == 'proc':
+		sem.release()
 		t_start = time.process_time()
+		# controle de processos
+		procs = []
 		for i in range(height):
-			for j in range(width):
-				if os.fork() == 0:
-					func(args[0][i][j], args[1][i][j], i, j)
-					os._exit(0)
+			proc = os.fork()
+			if proc == 0:
+				func(args[0][i], args[1][i], i)
+				os._exit(0)
+			else:
+				procs.append(proc)
 		# Espera todos os processos filho terminarem
-		for _ in range(width*height):
-			os.waitpid(0, 0)
+		for proc in procs:
+			os.waitpid(proc, 0)
+		t_end = time.process_time()
+		sem.acquire()
+		
 		mm_results.seek(0)
-		results = [None] * height
+		# Exibir o resultado
+		results = np.zeros((width, height))
 		for i in range(height):
-			results[i] = [None] * width
 			for j in range(width):
 				results[i][j] = int.from_bytes(mm_results.read(4), byteorder='big')
-		t_end = time.process_time()
+		print(args[0], '+\n', args[1], '=\n', results)
+		
 		print(t_end - t_start)
-		print(results)
 	elif method == 'thre':
 		t_start = time.process_time()
 		threads = []
-		results = [None] * height
+		results = np.zeros((width, height)).tolist()
 		for i in range(height):
-			results[i] = [None] * width
-
-		for i in range(height):
-			results[i] = [None] * width
 			for j in range(width):
 				x = threading.Thread(target=func, args=(args[0][i][j], args[1][i][j], results, i, j))
 				threads.append(x)
 				x.start()
-
 		for t in threads:
 			t.join()
 		t_end = time.process_time()
-		#print(results)
-
+		# print(args[0], '+', args[1], '=', results)
 		print(t_end - t_start)
 
 if (__name__ == "__main__"):
-	#matrizA = [[1,2,3],[4,5,6]]
-	#matrizB = [[7,8,9],[10,11,12]]
-	#print(matrizA)
-	#height = len(matrizA)
-	#width = len(matrizA[0])
-
-	#unroll([matrizA, matrizB], proc_func, 'proc', results)
-
-	for i in range(101):
-		if(i in [1, 2, 3, 4, 5, 6, 8, 10, 20, 30, 40, 50, 75, 100]):
-			matrizA = np.random.rand(i,i).tolist()
-			matrizB = np.random.rand(i,i).tolist()
-			height = len(matrizA)
-			width = len(matrizA[0])
-			unroll([matrizA, matrizB], thread_func, 'thre', results)
-	sem.close()
+	# Cria a mémoria compartilhada e o semaforo
+	memory = posix_ipc.SharedMemory(SMEM_NAME, flags = posix_ipc.O_CREAT, mode = 0o777, size=100*100*4)
+	mm_results = mmap.mmap(memory.fd, memory.size)
+	memory.close_fd()
+	sem = posix_ipc.Semaphore(SEM_NAME, flags = posix_ipc.O_CREAT, mode = 0o777,  initial_value=0)
+	# Controla os testes
+	for i in [1, 2, 3, 4, 5, 6, 8, 10]:
+		matrizA = np.random.randint(0,100,(i,i), 'int')
+		matrizB = np.random.randint(0,100,(i,i), 'int')
+		height, width = i, i
+		unroll([matrizA, matrizB], proc_func, 'proc', results)
+	# Fecha a mémoria
+	sem.unlink()
 	mm_results.close()
 	posix_ipc.unlink_shared_memory(SMEM_NAME)
 
-
-#Para testar quantidade de threads ativas.
-#print(threading.activeCount())
 
 
 ''' Referencias
