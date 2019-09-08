@@ -84,8 +84,8 @@ if (__name__ == "__main__"):
 		matrizA = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
 		matrizB = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
 		height, width = i, i
-		unroll([matrizA, matrizB], proc_func, 'proc', results)
-		# unroll([matrizA, matrizB], thread_func, 'thre', results)
+		# unroll([matrizA, matrizB], proc_func, 'proc', results)
+		unroll([matrizA, matrizB], thread_func, 'thre', results)
 	# Fecha a mémoria
 	sem.unlink()
 	mm_results.close()

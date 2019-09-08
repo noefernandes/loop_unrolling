@@ -36,8 +36,8 @@ if (__name__ == "__main__"):
 		matrizA = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
 		matrizB = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
 		height_a, width_a, height_b, width_b = i, i, i, i
-		# mat_sum([matrizA, matrizB],results)
-		mat_product([matrizA, matrizB],results)
+		mat_sum([matrizA, matrizB],results)
+		# mat_product([matrizA, matrizB],results)
 
 
 ''' Referencias
