@@ -9,9 +9,12 @@ width_b = 0
 
 def mat_sum(args, results):
 	t_start = time.process_time()
-	results = np.zeros((width_a, height_a), dtype=np.uint32)
+	results = np.zeros((height_a, width_a), dtype=np.uint32)
 	for i in range(height_a):
-		results[i] = args[0][i] + args[1][i]
+		for j in range(width_a):
+			results[i][j] = args[0][i][j] + args[1][i][j]
+	
+
 	t_end = time.process_time()
 	print(t_end - t_start)
 
@@ -23,7 +26,7 @@ def mat_product(args, results):
 		for j in range(width_b):
 			results[i] = np.sum(args[0][i]*args[1][:j])
 	t_end = time.process_time()
-	print("tempo: " + str(t_end - t_start))
+	print(str(t_end - t_start))
 
 if (__name__ == "__main__"):
 	results = []
@@ -33,11 +36,11 @@ if (__name__ == "__main__"):
 
 	#para testar os tempos de execução da operação para cada ordem de matriz.
 	for i in [1, 2, 3, 4, 5, 6, 8, 10, 20, 30, 40, 50, 75, 100]:
-		matrizA = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
-		matrizB = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
+		matrizA = np.random.randint(0, np.iinfo(np.uint16).max+1, (i,i), np.uint16)
+		matrizB = np.random.randint(0, np.iinfo(np.uint16).max+1, (i,i), np.uint16)
 		height_a, width_a, height_b, width_b = i, i, i, i
-		# mat_sum([matrizA, matrizB],results)
-		mat_product([matrizA, matrizB],results)
+		mat_sum([matrizA, matrizB],results)
+		# mat_product([matrizA, matrizB],results)
 
 
 ''' Referencias

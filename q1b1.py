@@ -31,7 +31,6 @@ def proc_func(row_a, row_b, i):
 	# fim da área protegida
 	sem.close()
 	
-
 #Funcao que efetua a operacao em cada elemento da matriz em um processo
 def thread_func(row_a, row_b, results, i):
 	results[i] = row_a + row_b
