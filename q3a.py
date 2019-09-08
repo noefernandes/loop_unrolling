@@ -2,74 +2,48 @@
 import threading
 from collections import deque
 from random import randrange
-''' Para fazer
-- Olhar a seguinte implementação: https://docs.python.org/3/library/queue.html
-- Colocar a operação paralela que já foi feita e utilizar no multiplicar_par
-- Olhar a modelagem na rede de petri e colocar o semaforo
-	
-'''
-
+import numpy as np
 
 fila_de_matrizes = deque()
 
-def multiplicar_par(a, b, predecessor_lock):
-	# proteger a mémoria
-	# se tiver 1 na fila manda o sinal
+def multiplicar_par(a, b, current, predecessor):
+	result = a.dot(b)
+	predecessor.acquire()
+	print(str(len(a)) + 'x' + str(len(a[0])), '·', str(len(b)) + 'x' + str(len(b[0])))
+	matrizes.append(result)
+	current.release()
+def unroll(matrizes):
+	print(" · ".join(str(len(m)) + 'x' + str(len(m[0])) for m in matrizes))
+	print('=')
+	while(len(matrizes) > 1):
+		lock = threading.Lock()
+		n = len(matrizes)
+		while(n > 1):
+			prev = lock
+			lock = threading.Lock()
+			lock.acquire()
+			thread = threading.Thread(target=multiplicar_par, args=(matrizes.popleft(), matrizes.popleft(), lock, prev))
+			thread.start()
+			n -= 2
+		lock.acquire()
+		if(n == 1):
+			matrizes.append(matrizes.popleft())
+		print('=')
+	print(str(len(matrizes[0]))+'x'+str(len(matrizes[0][0])))
 
-	# if(len(deque) > 0): # manda o sinal
-	# predecessor_lock.aquire()
-	# 
-	'''
-	def unroll(args, func, results):
-		threads = []
-
-		results = [None] * height_a
-		for i in range(height_a):
-			results[i] = [None] * width_b
-			for j in range(width_b):
-				x = threading.Thread(target=func, args=(results,i,j))
-				threads.append(x)
-				x.start()
-		for t in threads:
-			t.join()	
-		print(results)
-	from random import randrange'''
-
-def gerar_matriz(height, width, range_start, range_end):
-	matriz = [None]*height
-	for i in range(height):
-		matriz[i] = [None]*width
-		for j in range(width):
-			matriz[i][j] = randrange(range_start, range_end)
-	return matriz
-
-def gerar_matrizes_multiplicativas(amount, min_height = 2, min_width = 2, max_height = 5, max_width = 5,
+def gerar_matrizes_multiplicativas(amount, min_height = 1, min_width = 1, max_height = 5, max_width = 5,
 									range_start = 0, range_end=10):
 	matrizes = deque()
-	height = randrange(min_height, max_height)
+	height = randrange(min_height, max_height+1)
 	for n in range(amount):
-		width = randrange(min_width, max_width)
-		matrizes.append(gerar_matriz(height, width, range_start, range_end))
+		width = randrange(min_width, max_width+1)
+		matrizes.append(np.random.randint(0, np.iinfo(np.uint8).max+1, (height,width), np.uint8))
 		height = width
 	return matrizes
-
-def print_multi_one_digit(matrizes, cols):
-	height = max([len(mat) for mat in matrizes])
-	sep = ' x '
-	for i in range(height):
-		print(sep.join(filter(lambda x: x != None, [
-								str(matrizes[col][i]) if i < len(matrizes[col]) else None 
-								for col in range(cols)])))
-		sep = '   '
-
 if (__name__ == '__main__'):
-	# ABCDE
-	# AB
-	# CD
-	# E
-	# AB CD E
-	# mandar lock do antecessor
-	# gerar conjunto de matrizes
-	# 4x3 * 3x2 * 2x5 * 5*4
-	# 2x3 * 4x2 * 5x2
-	print_multi_one_digit(gerar_matrizes_multiplicativas(2), 2)
+	matrizes = gerar_matrizes_multiplicativas(7, max_width=30, max_height=30)
+	output = '\n·\n'.join(str(mat) for mat in matrizes)
+	unroll(matrizes)
+	print(output)
+	print('=')
+	print(matrizes[0])
