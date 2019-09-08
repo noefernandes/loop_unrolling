@@ -50,13 +50,10 @@ if (__name__ == "__main__"):
 
 	#para testar os tempos de execução da operação para cada ordem de matriz.
 	for i in [1, 2, 3, 4, 5, 6, 8, 10, 20, 30, 40, 50, 75, 100]:
-		matriz_a = np.random.rand(i, i).tolist()
-		matriz_b = np.random.rand(i, i).tolist()
-		height_a = len(matriz_a)
-		#print(matriz_a)
-		#print(matriz_b)
+		matrizA = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
+		matrizB = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
+		height_a, width_a, height_b, width_b = i, i, i, i
 		mat_product([matriz_a, matriz_b],results)
-
 
 
 #Para testar quantidade de threads ativas.

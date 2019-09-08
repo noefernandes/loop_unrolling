@@ -21,15 +21,16 @@ t_end = 0
 #Funcao que efetua a operacao em cada elemento da matriz em uma thread.
 def proc_func(row_a, row_b, i):
 	result = row_a + row_b
-	pos = i*width
-	# inicio da área protegida
+	pos = 4*i*width
 	mm_results.seek(pos)
 	bresults = result.tobytes() 
+	# inicio da área protegida
 	sem.acquire()
 	mm_results.write(bresults)
 	sem.release()
-	sem.close()
 	# fim da área protegida
+	sem.close()
+	
 
 #Funcao que efetua a operacao em cada elemento da matriz em um processo
 def thread_func(row_a, row_b, results, i):
@@ -55,14 +56,14 @@ def unroll(args, func, method, results):
 		sem.acquire()
 		mm_results.seek(0)
 		# Exibir o resultado
-		results = np.frombuffer(mm_results.read(width*height), dtype=np.uint8, count=width*height) 
+		results = np.frombuffer(mm_results.read(4*width*height), dtype=np.uint32, count=width*height) 
 		results.shape = (width,height)
 		# print(args[0], '\n+\n', args[1], '\n=\n', results)
 		print(t_end - t_start)
 	elif method == 'thre':
 		t_start = time.process_time()
 		threads = []
-		results = np.zeros((width, height), dtype=np.uint8)
+		results = np.zeros((width, height), dtype=np.uint32)
 		for i in range(height):
 			x = threading.Thread(target=func, args=(args[0][i], args[1][i], results, i))
 			threads.append(x)
@@ -81,8 +82,8 @@ if (__name__ == "__main__"):
 	sem = posix_ipc.Semaphore(SEM_NAME, flags = posix_ipc.O_CREAT, mode = 0o777,  initial_value=0)
 	# Controla os testes
 	for i in [1, 2, 3, 4, 5, 6, 8, 10, 20, 30, 40, 50, 75, 100]:
-		matrizA = np.random.randint(0,100,(i,i), np.uint8)
-		matrizB = np.random.randint(0,100,(i,i), np.uint8)
+		matrizA = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
+		matrizB = np.random.randint(0, np.iinfo(np.uint16).max, (i,i), np.uint16)
 		height, width = i, i
 		unroll([matrizA, matrizB], proc_func, 'proc', results)
 		# unroll([matrizA, matrizB], thread_func, 'thre', results)
